@@ -6,7 +6,7 @@ let audioElement = new Audio('songs/1.mp3');
 let masterPlay = document.getElementById('masterPlay');
 let myProgressBar = document.getElementById('myProgressBar');
 let gif = document.getElementById('gif')
-let songItems = document.getElementsByClassName('songItem');
+let songItems = Array.from(document.getElementsByClassName('songItem'));
 
 let songs = [
     {songName: "1 Salam-e-Ishq", filePath: "songs/1.mp3", coverPath: "covers/1.jpg"},
@@ -20,8 +20,9 @@ let songs = [
     {songName: "9 Salam-e-Ishq", filePath: "songs/9.mp3", coverPath: "covers/9.jpg"} 
 ];
 
-songItems.forEach((element)=>{
-    element.getElementsByTagName("img")
+songItems.forEach((element, i)=>{
+    element.getElementsByTagName("img")[0].src = songs[i].coverPath;
+    element.getElementsByClassName("songName")[0].innerText = songs[i].songName;
 })
 
 //audioElement.play();
@@ -51,4 +52,25 @@ audioElement.addEventListener('timeupdate', ()=>{
 
 myProgressBar.addEventListener('change', ()=>{
     audioElement.currentTime = myProgressBar.value * audioElement.duration/100;
+})
+
+const makeAllPlays = ()=>{
+    Array.from(document.getElementsByClassName('songItemPlay')).forEach((element)=>{
+        element.classList.remove('fa-circle-pause');
+        element.classList.add('fa-circle-play');
+    })
+}
+
+Array.from(document.getElementsByClassName('songItemPlay')).forEach((element)=>{
+    element.addEventListener('click',(e)=>{
+        makeAllPlays();
+        let index = parseInt(e.target.id);
+        e.target.classList.remove('fa-circle-play');
+        e.target.classList.add('fa-circle-pause');
+        audioElement.src = `songs/${index}.mp3`;
+        audioElement.currentTime = 0;
+        audioElement.play();
+        masterPlay.classList.remove('fa-circle-play');
+        masterPlay.classList.add('fa-circle-pause');
+    })
 })
